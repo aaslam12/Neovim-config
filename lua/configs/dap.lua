@@ -13,54 +13,36 @@ vim.keymap.set("n", "<leader>dao", dap.step_out, { desc = "DAP Step Out" })
 vim.keymap.set("n", "<leader>dar", dap.repl.toggle, { desc = "Toggle DAP REPL" })
 -- vim.keymap.set("n", "<leader>das", dap.session.toggle, { desc = "Toggle DAP Session" })
 
--- C/C++/Rust with cpptools (cppdbg)
-dap.adapters['my-cppdbg'] = {
-  type = 'executable',
-  command = os.getenv("HOME") .. '/.local/share/nvim/mason/bin/OpenDebugAD7', -- Adjust path if necessary
-  name = "cppdbg",
-  args = { "-useDebuggeeResponseForExitCode" },
+-- C/C++/Rust with codelldb
+dap.adapters.codelldb = {
+  type = 'server',
+  port = "${port}",
+  executable = {
+    -- CHANGE THIS to point to your codelldb installation
+    command = os.getenv("HOME") .. '/.local/share/nvim/mason/bin/codelldb',
+    args = {"--port", "${port}"},
+
+    -- On windows you may need to prefix the command with its path, i.e.
+    -- command = 'C:\\Users\\username\\.vscode\\extensions\\vadimcn.vscode-lldb-1.7.0\\adapter\\codelldb.exe',
+  }
 }
 
 dap.configurations.cpp = {
   {
     name = "Launch file",
-    type = "my-cppdbg",
+    type = "codelldb",
     request = "launch",
     program = function()
       return vim.fn.input("Path to executable: ", vim.fn.getcwd() .. "/a.out", "file")
     end,
     cwd = "${workspaceFolder}",
-    stopOnEntry = true,
-    sourceFileMap = {
-        ["."] = "${workspaceFolder}",
-    },
-    setupCommands = {
-      {
-        text = "-enable-pretty-printing",
-        description = "enable pretty printing",
-        ignoreFailures = false
-      },
-    },
-  },
-  {
-    name = "Attach to process",
-    type = "my-cppdbg",
-    request = "attach",
-    processId = require('dap.ui.widgets').process_picker,
-    cwd = "${workspaceFolder}",
-    stopOnEntry = true,
-    setupCommands = {
-      {
-        text = "-enable-pretty-printing",
-        description = "enable pretty printing",
-        ignoreFailures = false
-      },
-    },
+    stopOnEntry = false,
   },
 }
 
 dap.configurations.c = dap.configurations.cpp
 dap.configurations.rust = dap.configurations.cpp
+
 
 -- Python with debugpy
 dap.adapters.python = {
@@ -139,5 +121,5 @@ dap.configurations.python = {
 
 -- To integrate with Mason for debugger installation, you can add something like:
 require("mason-nvim-dap").setup({
-    ensure_installed = { "cppdbg" }
+    ensure_installed = { "codelldb" }
 })
