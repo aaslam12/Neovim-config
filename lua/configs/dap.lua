@@ -15,31 +15,30 @@ vim.keymap.set("n", "<leader>dar", dap.repl.toggle, { desc = "Toggle DAP REPL" }
 
 -- C/C++/Rust with codelldb
 dap.adapters.codelldb = {
-  type = 'server',
-  port = "${port}",
-  executable = {
-    -- CHANGE THIS to point to your codelldb installation
-    command = os.getenv("HOME") .. '/.local/share/nvim/mason/bin/codelldb',
-    args = {"--port", "${port}"},
+    type = "server",
+    port = "${port}",
+    executable = {
+        -- CHANGE THIS to point to your codelldb installation
+        command = os.getenv("HOME") .. "/.local/share/nvim/mason/bin/codelldb",
+        args = { "--port", "${port}" },
 
-    -- On windows you may need to prefix the command with its path, i.e.
-    -- command = 'C:\\Users\\username\\.vscode\\extensions\\vadimcn.vscode-lldb-1.7.0\\adapter\\codelldb.exe',
-  }
+        -- On windows you may need to prefix the command with its path, i.e.
+        -- command = 'C:\\Users\\username\\.vscode\\extensions\\vadimcn.vscode-lldb-1.7.0\\adapter\\codelldb.exe',
+    },
 }
 
 dap.configurations.cpp = {
-  {
-    name = "Launch file",
-    type = "codelldb",
-    request = "launch",
-    cwd = "${workspaceFolder}",
-    stopOnEntry = false,
-  },
+    {
+        name = "Launch file",
+        type = "codelldb",
+        request = "launch",
+        cwd = "${workspaceFolder}",
+        stopOnEntry = false,
+    },
 }
 
 dap.configurations.c = dap.configurations.cpp
 dap.configurations.rust = dap.configurations.cpp
-
 
 -- Python with debugpy
 dap.adapters.python = {
@@ -107,16 +106,7 @@ dap.configurations.python = {
 -- You can add more configurations for other languages as needed.
 -- Refer to nvim-dap documentation for more details.
 
--- General keymaps for DAP
--- vim.keymap.set("n", "<leader>db", dap.toggle_breakpoint, { desc = "Toggle Breakpoint" })
--- vim.keymap.set("n", "<leader>dc", dap.continue, { desc = "DAP Continue" })
--- vim.keymap.set("n", "<leader>dn", dap.step_over, { desc = "DAP Step Over" })
--- vim.keymap.set("n", "<leader>di", dap.step_into, { desc = "DAP Step Into" })
--- vim.keymap.set("n", "<leader>do", dap.step_out, { desc = "DAP Step Out" })
--- vim.keymap.set("n", "<leader>dr", dap.repl.toggle, { desc = "Toggle DAP REPL" })
--- vim.keymap.set("n", "<leader>ds", dap.session.toggle, { desc = "Toggle DAP Session" })
-
 -- To integrate with Mason for debugger installation, you can add something like:
 require("mason-nvim-dap").setup({
-    ensure_installed = { "codelldb" }
+    ensure_installed = { "codelldb" },
 })

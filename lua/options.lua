@@ -9,9 +9,28 @@ o.softtabstop = 4
 
 vim.opt.number = true
 vim.opt.relativenumber = true
-vim.opt.signcolumn = "number"
+vim.opt.signcolumn = "auto"
+vim.opt.expandtab = true
+vim.opt.smartindent = true
 
--- o.cursorlineopt ='both' -- to enable cursorline!
+vim.opt.ignorecase = true
+vim.opt.smartcase = true
+vim.opt.undofile = true
+vim.opt.autoread = true
+
+vim.opt.splitright = true
+vim.opt.list = true
+vim.opt.listchars = {
+    tab = "▸ ",
+    trail = "·",
+    extends = "❯",
+    precedes = "❮",
+}
+
+vim.opt.colorcolumn = "80"
+vim.opt.completeopt = { "menu", "menuone", "noselect" }
+
+o.cursorlineopt = "both" -- to enable cursorline!
 
 -- set filetype for .CBL COBOL files.
 -- vim.cmd([[ au BufRead,BufNewFile *.CBL set filetype=cobol ]])
