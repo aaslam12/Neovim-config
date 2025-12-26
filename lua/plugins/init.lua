@@ -1,5 +1,11 @@
 return {
     {
+        "lewis6991/gitsigns.nvim",
+        config = function()
+            require("gitsigns").setup({})
+        end,
+    },
+    {
         "nvim-treesitter/nvim-treesitter",
         event = { "BufReadPre", "BufNewFile" },
         config = function()
@@ -87,5 +93,5 @@ return {
         config = function()
             require("configs.cmake-tools")
         end,
-    }
+    },
 }

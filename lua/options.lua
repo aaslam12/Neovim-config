@@ -27,10 +27,11 @@ vim.opt.listchars = {
     precedes = "❮",
 }
 
-vim.opt.colorcolumn = "80"
+vim.opt.colorcolumn = "151"
 vim.opt.completeopt = { "menu", "menuone", "noselect" }
 
 o.cursorlineopt = "both" -- to enable cursorline!
 
+-- vim.o.scrolloff = 50
 -- set filetype for .CBL COBOL files.
 -- vim.cmd([[ au BufRead,BufNewFile *.CBL set filetype=cobol ]])

@@ -10,6 +10,7 @@ local options = {
 
     formatters = {
         -- -- C & C++
+        -- Commented because it interferes with project specific files
         -- ["clang-format"] = {
         --    prepend_args = {
         --        "-style={ \
