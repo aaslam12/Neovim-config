@@ -34,13 +34,6 @@ dofile(vim.g.base46_cache .. "statusline")
 
 require("nvchad.autocmds")
 
-vim.api.nvim_create_autocmd("BufWritePre", {
-    pattern = { "*.cpp", "*.h" },
-    callback = function()
-        vim.cmd("silent! %!clang-format --style=file")
-    end,
-})
-
 vim.schedule(function()
     require("mappings")
 end)
