@@ -76,3 +76,6 @@ map("n", "<leader>gb", function()
     gitsigns.blame_line({ full = true }, { desc = "See who is to blame for this code" })
 end)
 map("n", "<leader>gd", gitsigns.diffthis, { desc = "Opens a side by side diff" })
+
+map("n", "<C-1>", "^", { desc = "Go to the first non-whitespace character" })
+map("n", "<C-2>", "$", { desc = "Go to the end of the line" })
