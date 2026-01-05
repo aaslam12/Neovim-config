@@ -1,5 +1,35 @@
 return {
     {
+        "CopilotC-Nvim/CopilotChat.nvim",
+        dependencies = {
+            { "zbirenbaum/copilot.lua" }, -- or github/copilot.vim
+            { "nvim-lua/plenary.nvim" },
+        },
+        build = "make install",
+        opts = {
+            debug = true,
+        },
+        keys = {
+            { "<leader>cc", "<cmd>CopilotChatToggle<cr>", desc = "CopilotChat" },
+        },
+    },
+    {
+        "zbirenbaum/copilot.lua",
+        cmd = "Copilot",
+        event = "InsertEnter",
+        config = function()
+            require("copilot").setup({
+                suggestion = {
+                    enabled = true,
+                    auto_trigger = true,
+                    keymap = {
+                        accept = "<M-l>", -- Alt + l to accept suggestion
+                    },
+                },
+            })
+        end,
+    },
+    {
         "lewis6991/gitsigns.nvim",
         config = function()
             require("gitsigns").setup({})

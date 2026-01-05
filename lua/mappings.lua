@@ -37,7 +37,6 @@ map("n", "<leader>ci", vim.lsp.buf.implementation, { desc = "Lists all the imple
 
 map("i", "<C-BS>", "<C-w>", { desc = "Ctrl+Backspace deletes a word left of the cursor" })
 
-map("n", "<C-4>", "^", { desc = "Go to the first non-whitespace character" })
 -- map("n", "zF", "<cmd>zf a{<CR>", { noremap = true, desc = "Folds/Collapses a {} code block" })
 -- simulate the exact normal-mode sequence "zfa{"
 map("n", "zF", function()
@@ -79,3 +78,23 @@ map("n", "<leader>gd", gitsigns.diffthis, { desc = "Opens a side by side diff" }
 
 map("n", "<C-1>", "^", { desc = "Go to the first non-whitespace character" })
 map("n", "<C-2>", "$", { desc = "Go to the end of the line" })
+
+-- Define the original scrollback value
+local scroll_value = 10000
+
+-- Function to clear the terminal buffer
+local function clear_terminal()
+    vim.opt_local.scrollback = 200
+    vim.api.nvim_command("startinsert")
+    vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes("clear<CR>", true, false, true), "t", true)
+
+    -- Delay restoring scrollback to ensure the buffer is cleared
+    vim.defer_fn(function()
+        vim.opt_local.scrollback = scroll_value
+    end, 100)
+end
+
+-- Map Ctrl-L in Terminal mode to clear the buffer
+vim.keymap.set("t", "<C-l>", function()
+    clear_terminal()
+end, { desc = "Clear terminal buffer" })
