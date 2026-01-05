@@ -1,35 +1,5 @@
 return {
     {
-        "CopilotC-Nvim/CopilotChat.nvim",
-        dependencies = {
-            { "zbirenbaum/copilot.lua" }, -- or github/copilot.vim
-            { "nvim-lua/plenary.nvim" },
-        },
-        build = "make install",
-        opts = {
-            debug = true,
-        },
-        keys = {
-            { "<leader>cc", "<cmd>CopilotChatToggle<cr>", desc = "CopilotChat" },
-        },
-    },
-    {
-        "zbirenbaum/copilot.lua",
-        cmd = "Copilot",
-        event = "InsertEnter",
-        config = function()
-            require("copilot").setup({
-                suggestion = {
-                    enabled = true,
-                    auto_trigger = true,
-                    keymap = {
-                        accept = "<M-l>", -- Alt + l to accept suggestion
-                    },
-                },
-            })
-        end,
-    },
-    {
         "lewis6991/gitsigns.nvim",
         config = function()
             require("gitsigns").setup({})
@@ -45,15 +15,17 @@ return {
 
     {
         "neovim/nvim-lspconfig",
+        tag = "v0.1.8",
         event = { "BufReadPre", "BufNewFile" },
         config = function()
-            require("nvchad.configs.lspconfig").defaults()
+            -- require("nvchad.configs.lspconfig").defaults()
             require("configs.lspconfig")
         end,
     },
 
     {
         "williamboman/mason-lspconfig.nvim",
+        tag = "v1.30.0",
         event = "VeryLazy",
         dependencies = { "nvim-lspconfig" },
         config = function()
@@ -62,36 +34,10 @@ return {
     },
 
     {
-        "mfussenegger/nvim-lint",
-        event = { "BufReadPre", "BufNewFile" },
-        config = function()
-            require("configs.lint")
-        end,
-    },
-
-    {
-        "rshkarin/mason-nvim-lint",
-        event = "VeryLazy",
-        dependencies = { "nvim-lint" },
-        config = function()
-            require("configs.mason-lint")
-        end,
-    },
-
-    {
         "stevearc/conform.nvim",
         event = "BufWritePre",
         config = function()
             require("configs.conform")
-        end,
-    },
-
-    {
-        "zapling/mason-conform.nvim",
-        event = "VeryLazy",
-        dependencies = { "conform.nvim" },
-        config = function()
-            require("configs.mason-conform")
         end,
     },
 

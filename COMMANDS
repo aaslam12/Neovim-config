@@ -1,0 +1,43 @@
+1. Build and Install Lua 5.4.6
+Since the system lacked a Lua interpreter, we built one from source to power your Neovim configuration.
+
+
+cd ~
+wget https://www.lua.org/ftp/lua-5.4.6.tar.gz
+tar -zxf lua-5.4.6.tar.gz
+cd lua-5.4.6
+make linux
+cp src/lua ~/.local/bin/
+cp src/luac ~/.local/bin/
+chmod +x ~/.local/bin/lua ~/.local/bin/luac
+cd ~
+rm -rf lua-5.4.6 lua-5.4.6.tar.gz
+2. Install Static Clang-Format
+This version bypasses the libtinfo.so.5 error by using a fully static build.
+
+
+wget https://github.com/muttleyxd/clang-tools-static-binaries/releases/latest/download/clang-format-18_linux-amd64 -O ~/.local/bin/clang-format
+chmod +x ~/.local/bin/clang-format
+3. Install Standalone Clangd (LSP)
+This provides the IntelliSense and code navigation for C++ without requiring Mason's automated installers.
+
+
+wget https://github.com/clangd/clangd/releases/download/18.1.3/clangd-linux-18.1.3.zip
+unzip clangd-linux-18.1.3.zip
+mv clangd_18.1.3/bin/clangd ~/.local/bin/
+chmod +x ~/.local/bin/clangd
+rm -rf clangd_18.1.3 clangd-linux-18.1.3.zip
+4. Update Shell Environment
+Add these to your ~/.bashrc to ensure your local binaries and Lua paths are prioritized.
+
+
+export PATH="$HOME/.local/bin:$PATH"
+export LUA_PATH="$HOME/.local/share/lua/?.lua;$HOME/.local/share/lua/?/init.lua;;"
+Apply changes with: source ~/.bashrc
+
+5. Mandatory Neovim Clean Reset
+Run these commands to remove the incompatible "0.11" plugin versions and force Neovim to install the pinned versions defined in your init.lua.
+
+
+rm -rf ~/.local/share/nvim/lazy
+rm -rf ~/.local/state/nvim/lazy

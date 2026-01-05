@@ -32,4 +32,9 @@ local options = {
     indent = { enable = true },
 }
 
-require("nvim-treesitter.configs").setup(options)
+local status, ts_configs = pcall(require, "nvim-treesitter.configs")
+if status then
+    ts_configs.setup(options)
+else
+    require("nvim-treesitter").setup(options)
+end

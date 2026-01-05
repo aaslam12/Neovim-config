@@ -11,7 +11,13 @@ local options = {
     formatters = {
         -- -- C & C++
         -- Commented because it interferes with project specific files
-        -- ["clang-format"] = {
+        ["clang-format"] =
+	{
+		command = os.getenv("HOME") .. "/.local/bin/clang-format",
+	},
+	["stylua"] = {
+      		command = os.getenv("HOME") .. "/.local/bin/stylua",
+	},
         --    prepend_args = {
         --        "-style={ \
         --                  IndentWidth: 4, \
