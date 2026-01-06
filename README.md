@@ -119,7 +119,7 @@ cd ~/.config/nvim
 git checkout general-server
 ```
 
-### Post-installation "nuclear" reset
+### Post-installation
 
 If you previously tried to run Neovim and encountered errors (like "nil value" or "module not found"), clear the plugin cache before opening Neovim for the first time:
 
@@ -127,6 +127,8 @@ If you previously tried to run Neovim and encountered errors (like "nil value" o
 rm -rf ~/.local/share/nvim/lazy
 rm -rf ~/.local/state/nvim/lazy
 ```
+
+Additionally, if you use ssh to use this server, you will need to increase your timeout time for clang-format in `conform.lua`. Check this branch's `conform.lua` to see.
 
 ---
 
