@@ -1,151 +1,160 @@
-## Fix Neovim config compatibility for restricted environment and Neovim `0.10`
+## Neovim Config for Restricted Linux Servers (No Sudo)
 
-### To use:
-1. Checkout this branch.
-2. Run a clean lazy.nvim sync (remove `~/.local/share/nvim/lazy` and `~/.local/state/nvim/lazy`).
-3. Restart Neovim.
-4. Verify LSP and formatting using the manually installed binaries in `~/.local/bin`.
+This configuration is for C++ and neovim development on restricted Linux environments running Neovim 0.10.4.
 
-#### Put this into your `~/.bashrc`
-```
-export PATH="$HOME/.local/bin:$PATH"`
-export LD_LIBRARY_PATH="$HOME/.local/bin:$LD_LIBRARY_PATH"
-export LUA_PATH="$HOME/.local/share/lua/?.lua;$HOME/.local/share/lua/?/init.lua;;"
-```
-use `source ~/.bashrc` to apply these changes
+It addresses common issues such as:
+* **No Sudo/Root Access:** All tools are installed locally to `~/.local/bin`.
+* **Outdated System Libraries:** Uses static binaries to bypass `libtinfo` and `libc` version errors.
+* **Neovim Version Gap:** Pins plugins to versions compatible with Neovim 0.10 to prevent crashes caused by 0.11+ requirements.
+* **Limited Disk Quota:** Avoids large Mason installations by using manual, lightweight binaries.
 
-### The process
-This branch stabilizes the Neovim configuration for use on a restricted system
-without administrative privileges and with an older Neovim version (`0.10.4`).
+---
 
-1. Toolchain & Binary Resolution
-   - Replaced broken system clang-format with a statically compiled `x86_64` binary
-     that does not depend on missing shared libraries such as `libtinfo.so.5`.
-   - Compiled Lua `5.4.6` from source into `~/.local/bin` to provide a usable
-     Lua interpreter where the system had none.
-   - Disabled Luacheck and nvim-lint entirely due to incompatible C dependencies
-     (`argparse`, `lfs`) in this restricted environment.
+## Prerequisites
 
-2. Neovim Plugin Compatibility
-   - Pinned critical plugins to versions compatible with Neovim 0.10:
-       •` nvim-lspconfig` → `tag v0.1.8`
-       • `mason-lspconfig.nvim` → `tag v1.30.0`
-   - Disabled NvChad’s default LSP configuration (`nvchad.configs.lspconfig.defaults()`)
-     which assumes Neovim 0.11 APIs.
-   - Updated Treesitter config with a pcall fallback to handle structural changes
-     in newer plugin versions.
-   - Updated mason-lspconfig setup to disable automatic installation and avoid
-     calls to non-existent 0.11 APIs.
+Because `mason.nvim` cannot function properly without `pip`, `npm`, or `venv` on these servers, you must manually install the toolchain.
 
-3. Compatibility Shim for mason-lspconfig
-   - Added a local shim that defines a no-op `vim.lsp.enable` function when missing,
-     preventing crashes in `mason-lspconfig`’s automatic_enable feature on Neovim `0.10`.
+### 1. Prepare local bin directories
 
-4. Configuration Cleanup
-   - Removed Copilot plugin references as they require Neovim 0.11.
-   - Disabled all linting plugins to avoid background errors.
-   - Configured conform.nvim to use absolute paths to local manually built binaries.
+Run:
 
-5. Maintenance Procedures
-   - Established a clean sync routine:
-       • Delete plugin cache (`~/.local/share/nvim/lazy` and `~/.local/state/nvim/lazy`)
-         to force clean re-clones of pinned plugin versions.
-       • Restart Neovim after changes.
-
-6. Resolved Errors
-   - Library errors due to missing `libtinfo.so.5` fixed via static binaries.
-   - “command not found: lua” resolved by local Lua build.
-   - Disabled tools with incompatible C modules (luacheck, nvim-lint).
-   - Patched or bypassed plugin code that assumed Neovim 0.11-only APIs.
-
-### Usage Notes:
-- After checking out this branch:
-    1. Run the clean sync procedure (remove lazy cache and restart Neovim).
-    2. Verify that `clangd`, `lua_ls`, and formatters work using binaries in `~/.local/bin`.
-    3. Do not re-enable plugins that require native C modules or Neovim 0.11 features.
-- This branch targets stability on restricted systems; a future upgrade to Neovim 0.11+
-  should revisit pinned plugin versions and remove compatibility shims.
-
-### This branch should be used when:
-- Running on systems without administrative privileges or required shared libraries.
-- Using Neovim 0.10.x where many plugins assume 0.11+ APIs.
-- Avoiding external C dependencies and tools that cannot be built here.
-
-## Phase 1: Setting up Static Binaries
-These commands worked because they use standalone versions of tools that don't depend on the school's restricted system libraries.
-
-Note: If unzipping the entire clangd binary is too big, only extract what we need.
-### Install Static Clang-Format:
-```
+```bash
 mkdir -p ~/.local/bin
-wget https://github.com/muttleyxd/clang-tools-static-binaries/releases/latest/download/clang-format-18_linux-amd64 -O ~/.local/bin/clang-format
-chmod +x ~/.local/bin/clang-format
+mkdir -p ~/.local/share/lua
 ```
 
-### Install Static StyLua:
-```
-wget https://github.com/JohnnyMorganz/StyLua/releases/download/v2.0.2/stylua-linux-x86_64.zip
-unzip stylua-linux-x86_64.zip -d ~/.local/bin
-chmod +x ~/.local/bin/stylua
-rm stylua-linux-x86_64.zip
-```
+### 2. Install the toolchain
 
-### Install Standalone Clangd (LSP):
-```
-wget https://github.com/clangd/clangd/releases/download/18.1.3/clangd-linux-18.1.3.zip
-unzip clangd-linux-18.1.3.zip
-mv clangd_18.1.3/bin/clangd ~/.local/bin/
-chmod +x ~/.local/bin/clangd
-rm -rf clangd_18.1.3 clangd-linux-18.1.3.zip
-```
+Run the following commands to install Lua, clangd, clang-format, and stylua without root privileges.
 
-## Phase 2: Building Lua from Source
-Since the system lacked a compatible Lua interpreter for your custom scripts, we built one locally.
+#### A. Lua 5.4.6 (compiled from source)
 
-### Compile and Move Lua:
-```
+Since the system Lua is often missing or outdated, compile a local version. This is required for Neovim formatting scripts.
+
+```bash
+cd ~
 wget https://www.lua.org/ftp/lua-5.4.6.tar.gz
 tar -zxf lua-5.4.6.tar.gz
 cd lua-5.4.6
 make linux
 cp src/lua ~/.local/bin/
 cp src/luac ~/.local/bin/
-chmod +x ~/.local/bin/lua ~/.local/bin/luac
 cd ~
 rm -rf lua-5.4.6 lua-5.4.6.tar.gz
 ```
 
-## Phase 3: Fixing Neovim Version Crashes
-Pin Plugin Versions (`lua/plugins/init.lua`): Modify plugin list to include specific tags for compatibility with Neovim `0.10.4`:
-```
-neovim/nvim-lspconfig → tag = "v0.1.8"
-williamboman/mason-lspconfig.nvim → tag = "v1.30.0"
+#### B. clangd (LSP for C++)
+
+Downloads a standalone binary for IntelliSense.
+
+```bash
+cd ~
+wget https://github.com/clangd/clangd/releases/download/18.1.3/clangd-linux-18.1.3.zip
+unzip clangd-linux-18.1.3.zip
+mv clangd_18.1.3/bin/clangd ~/.local/bin/
+rm -rf clangd_18.1.3 clangd-linux-18.1.3.zip
+chmod +x ~/.local/bin/clangd
 ```
 
-### Bypass Crashing Defaults: 
-In lua/plugins/init.lua, you commented out the crashing NvChad internal defaults:
-```-- require("nvchad.configs.lspconfig").defaults()```
+#### C. clang-format (static binary)
 
-Correct Mason Setup (`lua/configs/mason-lspconfig.lua`): You replaced the syntax that caused the attempt to call global `ensure_installed` error:
+Use a fully static build to avoid `libtinfo.so.5` errors common on older enterprise Linux distros. Adjust the URL to the static build you prefer; put the binary into `~/.local/bin/` and mark executable.
+
+```bash
+wget https://github.com/llvm/llvm-project/releases/download/llvmorg-18.1.8/clang+llvm-18.1.8-x86_64-linux-gnu-ubuntu-18.04.tar.xz
+
+<extract /bin/clang-format from the tar ball>
+
+cp clang+llvm-18.1.8-x86_64-linux-gnu-ubuntu-18.04/bin/clang-format ~/.local/bin/
+chmod +x ~/.local/bin/clang-format
+rm clang+llvm-18.1.8-x86_64-linux-gnu-ubuntu-18.04.tar.xz
 ```
-require("mason-lspconfig").setup({
-    ensure_installed = { "lua_ls", "clangd" },
-    automatic_installation = false,
-    handlers = {}, -- Fixed the 'automatic_enable.lua' nil error
-})
-````
 
-## Phase 4: Final Environment Activation
-To make these tools active, you updated your shell and cleared the corrupted plugin state.
+#### D. StyLua (Lua formatter)
 
-### Update `.bashrc`:
+```bash
+cd ~
+wget https://github.com/JohnnyMorganz/StyLua/releases/download/v0.20.0/stylua-linux-x86_64.zip
+unzip stylua-linux-x86_64.zip -d ~/.local/bin
+rm stylua-linux-x86_64.zip
+chmod +x ~/.local/bin/stylua
 ```
-echo 'export PATH="$HOME/.local/bin:$PATH"' >> ~/.bashrc
+
+### 3. Update your shell PATH
+
+Add the following to `~/.bashrc` (or your shell profile) and source it:
+
+```bash
+export PATH="$HOME/.local/bin:$PATH"
+export LD_LIBRARY_PATH="$HOME/.local/bin:$LD_LIBRARY_PATH"
+export LUA_PATH="$HOME/.local/share/lua/?.lua;$HOME/.local/share/lua/?/init.lua;;"
+
+# Apply changes
 source ~/.bashrc
 ```
 
-The "Nuclear" Plugin Reset: This resolved the module `nvim-treesitter.configs` not found and persistent nil value crashes by forcing a fresh download of the correct pinned versions.
+---
+
+## Installation
+
+1. **Backup existing config**
+
+```bash
+mv ~/.config/nvim ~/.config/nvim.bak
+mv ~/.local/share/nvim ~/.local/share/nvim.bak
 ```
+
+2. **Clone this repository**
+
+```bash
+git clone https://github.com/aaslam12/Neovim-config.git ~/.config/nvim
+```
+
+3. **Switch branch (if applicable)**
+
+Ensure you are on the `general-server` branch if that contains the server-specific fixes:
+
+```bash
+cd ~/.config/nvim
+git checkout general-server
+```
+
+### Post-installation "nuclear" reset
+
+If you previously tried to run Neovim and encountered errors (like "nil value" or "module not found"), clear the plugin cache before opening Neovim for the first time:
+
+```bash
 rm -rf ~/.local/share/nvim/lazy
 rm -rf ~/.local/state/nvim/lazy
 ```
+
+---
+
+## Features & fixes included
+
+This configuration includes server-specific patches and workarounds:
+
+* **Plugin pinning:** `nvim-lspconfig` pinned to `v0.1.8` and `mason-lspconfig` to `v1.30.0` to avoid crashes caused by plugins expecting Neovim 0.11 features.
+* **Static linking:** Formatting uses `conform.nvim` pointing to absolute paths in `~/.local/bin`, bypassing the broken Mason registry.
+* **Linting disabled:** `nvim-lint` and `luacheck` are disabled to avoid dependency hell with `LuaFileSystem` and C libraries.
+* **Treesitter fallback:** Includes a `pcall` fix to handle module location changes in newer Treesitter versions.
+
+---
+
+## Verifying setup
+
+1. Open Neovim:
+
+```bash
+nvim
+```
+
+2. Wait for `lazy.nvim` to finish cloning all plugins.
+3. Open a C++ file:
+
+```bash
+nvim test.cpp
+```
+
+4. Run `:LspInfo` — it should show the `clangd` client attached.
+5. Run `:Format` — it should format using your static `clang-format`.
