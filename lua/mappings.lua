@@ -22,6 +22,13 @@ map("n", "<leader>fg", builtin.live_grep, { desc = "Telescope Live Grep" })
 
 map("n", "<leader>ft", "<cmd>Telescope diagnostics<CR>", { desc = "Telescope All Diagnostics in open buffers" })
 map("n", "<leader>cv", vim.diagnostic.open_float, { desc = "View Code Diagnostics" })
+map("n", "<leader>cs", "<cmd>Telescope lsp_document_symbols<CR>", { desc = "View all code symbols in current buffer" })
+map(
+    "n",
+    "<leader>cS",
+    "<cmd>Telescope lsp_dynamic_workspace_symbols<CR>",
+    { desc = "View all code symbols in all buffer" }
+)
 
 -- Keybinding for switching between open buffers
 map("n", "<leader>fb", builtin.buffers, { desc = "Telescope Find Buffers" })
@@ -94,7 +101,33 @@ local function clear_terminal()
     end, 100)
 end
 
--- Map Ctrl-L in Terminal mode to clear the buffer
 vim.keymap.set("t", "<C-l>", function()
     clear_terminal()
 end, { desc = "Clear terminal buffer" })
+
+--
+--
+--
+-- DIAGNOSTICS KEYBINDS
+-- toggle all diagnostics on/off
+local function toggle_all_diags()
+    vim.diagnostic.enable(not vim.diagnostic.is_enabled())
+end
+
+-- toggle virtual text (inline messages)
+local function toggle_virtual_text()
+    local cfg = vim.diagnostic.config()
+    vim.diagnostic.config({ virtual_text = not cfg.virtual_text })
+end
+
+-- toggle all diagnostics
+vim.keymap.set("n", "<leader>td", toggle_all_diags, { desc = "Toggle all diagnostics" })
+
+-- toggle inline virtual text
+vim.keymap.set("n", "<leader>tv", toggle_virtual_text, { desc = "Toggle inline virtual text" })
+
+-- Build System (uses makeprg = ./build.py)
+map("n", "<leader>mm", "<cmd>make<CR>", { desc = "Run Build Script (Default)" })
+map("n", "<leader>mt", "<cmd>make --no-tests<CR>", { desc = "Run Build Script (No Tests)" })
+map("n", "<leader>mc", "<cmd>make --clean<CR>", { desc = "Clean Build Directory" })
+map("n", "<leader>mf", "<cmd>copen<CR>", { desc = "Open Quickfix List (Build Errors)" })

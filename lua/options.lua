@@ -32,6 +32,12 @@ vim.opt.completeopt = { "menu", "menuone", "noselect" }
 
 o.cursorlineopt = "both" -- to enable cursorline!
 
+-- Build Configuration
+-- Use the project's build.py script for :make
+vim.opt.makeprg = "python3 build.py"
+-- Standard error format for GCC/Clang/Ninja
+vim.opt.errorformat = "%f:%l:%c: %m"
+
 -- vim.o.scrolloff = 50
 -- set filetype for .CBL COBOL files.
 -- vim.cmd([[ au BufRead,BufNewFile *.CBL set filetype=cobol ]])

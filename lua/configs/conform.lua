@@ -5,7 +5,7 @@ local options = {
         cpp = { "clang-format" },
         -- go = { "gofumpt", "goimports-reviser", "golines" },
         -- haskell = { "fourmolu", "stylish-haskell" },
-        -- python = { "isort", "black" },
+        python = { "isort", "black" },
     },
 
     formatters = {
@@ -27,32 +27,30 @@ local options = {
         --     prepend_args = { "-rm-unused" },
         -- },
         -- golines = {
-        --     prepend_args = { "--max-len=80" },
+        --     prepend_args = { "--max-len=150" },
         -- },
         -- -- Lua
         -- stylua = {
         --     prepend_args = {
-        --         "--column-width", "80",
+        --         "--column-width", "150",
         --         "--line-endings", "Unix",
         --         "--indent-type", "Spaces",
         --         "--indent-width", "4",
         --         "--quote-style", "AutoPreferDouble",
         --     },
         -- },
-        -- -- Python
-        -- black = {
-        --     prepend_args = {
-        --         "--fast",
-        --         "--line-length",
-        --         "80",
-        --     },
-        -- },
-        -- isort = {
-        --     prepend_args = {
-        --         "--profile",
-        --         "black",
-        --     },
-        -- },
+        -- Python
+        black = {
+            prepend_args = {
+                "--fast",
+            },
+        },
+        isort = {
+            prepend_args = {
+                "--profile",
+                "black",
+            },
+        },
     },
 
     format_on_save = {

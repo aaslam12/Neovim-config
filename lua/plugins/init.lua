@@ -115,13 +115,4 @@ return {
 
     -- Required for nvim-dap-ui
     { "nvim-neotest/nvim-nio" },
-
-    {
-        "Civitasv/cmake-tools.nvim",
-        event = "VeryLazy",
-        dependencies = { "nvim-lua/plenary.nvim" },
-        config = function()
-            require("configs.cmake-tools")
-        end,
-    },
 }

@@ -29,11 +29,22 @@ dap.adapters.codelldb = {
 
 dap.configurations.cpp = {
     {
-        name = "Launch file",
+        name = "Run MiniEditor",
         type = "codelldb",
         request = "launch",
+        program = "${workspaceFolder}/build/Debug/minieditor",
         cwd = "${workspaceFolder}",
         stopOnEntry = false,
+        runInTerminal = true,
+    },
+    {
+        name = "Run Tests",
+        type = "codelldb",
+        request = "launch",
+        program = "${workspaceFolder}/build/Debug/tests",
+        cwd = "${workspaceFolder}",
+        stopOnEntry = false,
+        runInTerminal = true,
     },
 }
 
