@@ -113,6 +113,15 @@ return {
         end,
     },
 
+    {
+        "theHamsta/nvim-dap-virtual-text",
+        event = "VeryLazy",
+        dependencies = { "mfussenegger/nvim-dap" },
+        config = function()
+            require("nvim-dap-virtual-text").setup()
+        end,
+    },
+
     -- Required for nvim-dap-ui
     { "nvim-neotest/nvim-nio" },
 }
