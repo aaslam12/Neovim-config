@@ -13,6 +13,7 @@ lspconfig.servers = {
     -- "hls",
     -- "ols",
     "pyright",
+    "jdtls",
 }
 
 -- list of servers configured with default config.
@@ -57,4 +58,11 @@ vim.lsp.config("lua_ls", { -- nvim 0.11
             },
         },
     },
+})
+
+vim.api.nvim_create_autocmd("FileType", {
+    pattern = "java",
+    callback = function(args)
+        require("jdtls.jdtls_setup").setup()
+    end,
 })

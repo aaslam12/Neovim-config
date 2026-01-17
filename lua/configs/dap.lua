@@ -119,5 +119,5 @@ dap.configurations.python = {
 
 -- To integrate with Mason for debugger installation, you can add something like:
 require("mason-nvim-dap").setup({
-    ensure_installed = { "codelldb" },
+    ensure_installed = { "codelldb", "java-debug-adapter", "java-test" },
 })

@@ -1,33 +1,17 @@
 return {
     {
-        "CopilotC-Nvim/CopilotChat.nvim",
-        dependencies = {
-            { "zbirenbaum/copilot.lua" }, -- or github/copilot.vim
-            { "nvim-lua/plenary.nvim" },
-        },
-        build = "make install",
-        opts = {
-            debug = true,
-        },
-        keys = {
-            { "<leader>cc", "<cmd>CopilotChatToggle<cr>", desc = "CopilotChat" },
-        },
+        "mfussenegger/nvim-jdtls",
     },
     {
-        "zbirenbaum/copilot.lua",
-        cmd = "Copilot",
-        event = "InsertEnter",
-        config = function()
-            require("copilot").setup({
-                suggestion = {
-                    enabled = true,
-                    auto_trigger = true,
-                    keymap = {
-                        accept = "<M-l>", -- Alt + l to accept suggestion
-                    },
-                },
-            })
-        end,
+        "hrsh7th/nvim-cmp",
+    },
+    {
+        "hrsh7th/cmp-nvim-lsp",
+        opts = {
+            sources = {
+                { name = "nvim_lua" },
+            },
+        },
     },
     {
         "lewis6991/gitsigns.nvim",
@@ -56,6 +40,14 @@ return {
         "williamboman/mason-lspconfig.nvim",
         event = "VeryLazy",
         dependencies = { "nvim-lspconfig" },
+        opts = {
+            automatic_enable = {
+                exclude = {
+                    -- needs external plugin
+                    "jdtls",
+                },
+            },
+        },
         config = function()
             require("configs.mason-lspconfig")
         end,
