@@ -131,3 +131,29 @@ map("n", "<leader>mm", "<cmd>make<CR>", { desc = "Run Build Script (Default)" })
 map("n", "<leader>mt", "<cmd>make --no-tests<CR>", { desc = "Run Build Script (No Tests)" })
 map("n", "<leader>mc", "<cmd>make --clean<CR>", { desc = "Clean Build Directory" })
 map("n", "<leader>mf", "<cmd>copen<CR>", { desc = "Open Quickfix List (Build Errors)" })
+
+-- Build tasks
+map("n", "<leader>nb", "<cmd>OverseerRun<CR>", { desc = "UE: Run Task" })
+map("n", "<leader>nB", "<cmd>OverseerToggle<CR>", { desc = "UE: Toggle Task List" })
+
+-- Editor tasks
+map("n", "<leader>nh", "<cmd>OverseerRun UE_GenerateProjectFiles<CR>", { desc = "UE: Generate Project Files" })
+map("n", "<leader>nH", "<cmd>OverseerToggle<CR>", { desc = "UE: Show Tasks" })
+
+-- Quick access
+map("n", "<leader>nr", "<cmd>OverseerRun UE_Build<CR>", { desc = "UE: Build Project" })
+map("n", "<leader>nc", "<cmd>OverseerRun UE_Clean<CR>", { desc = "UE: Clean Build" })
+map("n", "<leader>nl", "<cmd>OverseerRun UE_Editor<CR>", { desc = "UE: Launch Editor" })
+map("n", "<leader>nd", "<cmd>OverseerRun UE_Diagnostics<CR>", { desc = "UE: Show Task Output" })
+
+-- Overseer main commands
+map("n", "<leader>no", "<cmd>OverseerOpen<CR>", { desc = "UE: Open Task List" })
+map("n", "<leader>nq", "<cmd>OverseerClose<CR>", { desc = "UE: Close Task List" })
+
+-- Simpler direct task commands using OverseerRun
+vim.api.nvim_create_user_command("UEBuild", "OverseerRun UE_Build", { desc = "Build Unreal project" })
+vim.api.nvim_create_user_command("UEClean", "OverseerRun UE_Clean", { desc = "Clean build" })
+vim.api.nvim_create_user_command("UEGenerate", "OverseerRun UE_GenerateProjectFiles", { desc = "Generate project files" })
+vim.api.nvim_create_user_command("UELaunch", "OverseerRun UE_Editor", { desc = "Launch UE editor" })
+vim.api.nvim_create_user_command("UECompileDB", "OverseerRun UE_CompileDB", { desc = "Generate compile_commands.json" })
+vim.api.nvim_create_user_command("UETasks", "OverseerToggle", { desc = "Show all UE tasks" })
