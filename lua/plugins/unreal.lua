@@ -75,25 +75,13 @@ return {
             })
 
             -- Keymaps using the commands module
-            vim.keymap.set("n", "<leader>ub", function()
-                require("unrealengine.commands").build()
-            end, { desc = "[U]nreal [B]uild" })
-
             vim.keymap.set("n", "<leader>ug", function()
                 require("unrealengine.commands").generate_lsp()
             end, { desc = "[U]nreal [G]enerate LSP" })
 
-            vim.keymap.set("n", "<leader>uo", function()
-                require("unrealengine.commands").open()
-            end, { desc = "[U]nreal [O]pen Editor" })
-
-            vim.keymap.set("n", "<leader>uc", function()
-                require("unrealengine.commands").clean()
-            end, { desc = "[U]nreal [C]lean" })
-
-            vim.keymap.set("n", "<leader>ur", function()
-                require("unrealengine.commands").rebuild()
-            end, { desc = "[U]nreal [R]ebuild" })
+            vim.keymap.set("n", "<leader>ue", function()
+                require("unrealengine.commands").build_engine()
+            end, { desc = "[U]nreal [E]ngine - Build Plugin" })
         end,
     },
 }

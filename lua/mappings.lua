@@ -140,20 +140,51 @@ map("n", "<leader>nB", "<cmd>OverseerToggle<CR>", { desc = "UE: Toggle Task List
 map("n", "<leader>nh", "<cmd>OverseerRun UE_GenerateProjectFiles<CR>", { desc = "UE: Generate Project Files" })
 map("n", "<leader>nH", "<cmd>OverseerToggle<CR>", { desc = "UE: Show Tasks" })
 
--- Quick access
-map("n", "<leader>nr", "<cmd>OverseerRun UE_Build<CR>", { desc = "UE: Build Project" })
-map("n", "<leader>nc", "<cmd>OverseerRun UE_Clean<CR>", { desc = "UE: Clean Build" })
-map("n", "<leader>nl", "<cmd>OverseerRun UE_Editor<CR>", { desc = "UE: Launch Editor" })
-map("n", "<leader>nd", "<cmd>OverseerRun UE_Diagnostics<CR>", { desc = "UE: Show Task Output" })
-
 -- Overseer main commands
 map("n", "<leader>no", "<cmd>OverseerOpen<CR>", { desc = "UE: Open Task List" })
 map("n", "<leader>nq", "<cmd>OverseerClose<CR>", { desc = "UE: Close Task List" })
 
 -- Simpler direct task commands using OverseerRun
 vim.api.nvim_create_user_command("UEBuild", "OverseerRun UE_Build", { desc = "Build Unreal project" })
-vim.api.nvim_create_user_command("UEClean", "OverseerRun UE_Clean", { desc = "Clean build" })
-vim.api.nvim_create_user_command("UEGenerate", "OverseerRun UE_GenerateProjectFiles", { desc = "Generate project files" })
 vim.api.nvim_create_user_command("UELaunch", "OverseerRun UE_Editor", { desc = "Launch UE editor" })
-vim.api.nvim_create_user_command("UECompileDB", "OverseerRun UE_CompileDB", { desc = "Generate compile_commands.json" })
 vim.api.nvim_create_user_command("UETasks", "OverseerToggle", { desc = "Show all UE tasks" })
+
+-- Quick access
+map("n", "<leader>ub", "<cmd>OverseerRun UE_Build<CR>", { desc = "UE: Build Project" })
+map("n", "<leader>uo", "<cmd>OverseerRun UE_Editor<CR>", { desc = "UE: Launch Editor" })
+map("n", "<leader>ut", "<cmd>OverseerToggle<CR>", { desc = "UE: Show Task Output" })
+
+-- Trigger the Live Coding build
+vim.keymap.set("n", "<leader>ur", function()
+    require("configs.unreal_livecoding").trigger_live_coding_build()
+end, { desc = "UE: Trigger Live Coding Build" })
+
+-- Trigger hot reload (requires running editor)
+vim.keymap.set("n", "<leader>uh", function()
+    require("configs.unreal_livecoding").trigger_hot_reload()
+end, { desc = "UE: Hot Reload (Editor must be running)" })
+
+-- Trigger Live Coding build + automatic hot reload
+vim.keymap.set("n", "<leader>uR", function()
+    require("configs.unreal_livecoding").trigger_live_coding_with_reload()
+end, { desc = "UE: Live Coding Build + Hot Reload" })
+
+--
+--
+--
+--
+-- Typst
+map("n", "<leader>ti", "<cmd>TypstPreviewUpdate<cr>", { desc = "Typst: Install/Update binaries" })
+
+-- 2. Preview Control
+map("n", "<leader>tp", "<cmd>TypstPreview<cr>", { desc = "Typst: Start Preview" })
+map("n", "<leader>ts", "<cmd>TypstPreviewStop<cr>", { desc = "Typst: Stop Preview" })
+map("n", "<leader>tt", "<cmd>TypstPreviewToggle<cr>", { desc = "Typst: Toggle Preview" })
+
+-- 3. Cursor and Scrolling Behavior
+-- Toggle whether the preview follows your cursor automatically
+map("n", "<leader>tf", "<cmd>TypstPreviewFollowCursorToggle<cr>", { desc = "Typst: Toggle Follow Cursor" })
+
+-- Manually sync the preview to your current cursor position
+-- Useful if FollowCursor is turned off
+map("n", "<leader>tc", "<cmd>TypstPreviewSyncCursor<cr>", { desc = "Typst: Sync Preview to Cursor" })
