@@ -6,6 +6,119 @@ require("gitsigns").setup()
 
 local map = vim.keymap.set
 
+local optimized_langmap_pairs = {
+    { "|", "-" },
+    { "\\", "_" },
+    { "[", "=" },
+    { "{", "+" },
+    { "p", "q" },
+    { "P", "Q" },
+    { "y", "w" },
+    { "Y", "W" },
+    { "u", "e" },
+    { "U", "E" },
+    { ".", "r" },
+    { ">", "R" },
+    { "-", "t" },
+    { "_", "T" },
+    { "q", "y" },
+    { "Q", "Y" },
+    { "m", "u" },
+    { "M", "U" },
+    { "c", "i" },
+    { "C", "I" },
+    { "d", "o" },
+    { "D", "O" },
+    { "z", "p" },
+    { "Z", "P" },
+    { "w", "[" },
+    { "W", "{" },
+    { "=", "]" },
+    { "+", "}" },
+    { "]", "\\" },
+    { "}", "|" },
+    { "h", "a" },
+    { "H", "A" },
+    { "i", "s" },
+    { "I", "S" },
+    { "e", "d" },
+    { "E", "D" },
+    { "a", "f" },
+    { "A", "F" },
+    { "o", "g" },
+    { "O", "G" },
+    { "l", "h" },
+    { "L", "H" },
+    { "t", "j" },
+    { "T", "J" },
+    { "s", "k" },
+    { "S", "K" },
+    { "n", "l" },
+    { "N", "L" },
+    { "r", ";" },
+    { "R", ":" },
+    { "x", "'" },
+    { "X", '"' },
+    { "k", "z" },
+    { "K", "Z" },
+    { "/", "x" },
+    { "?", "X" },
+    { "'", "c" },
+    { '"', "C" },
+    { ",", "v" },
+    { "<", "V" },
+    { ";", "b" },
+    { ":", "B" },
+    { "g", "n" },
+    { "G", "N" },
+    { "v", "m" },
+    { "V", "M" },
+    { "f", "," },
+    { "F", "<" },
+    { "b", "." },
+    { "B", ">" },
+    { "j", "/" },
+    { "J", "?" },
+}
+
+local function escape_langmap_char(char)
+    return char:gsub("\\", "\\\\"):gsub('[,;"|]', "\\%1")
+end
+
+local function build_langmap(pairs)
+    local parts = {}
+    for _, pair in ipairs(pairs) do
+        parts[#parts + 1] = escape_langmap_char(pair[1]) .. escape_langmap_char(pair[2])
+    end
+    return table.concat(parts, ",")
+end
+
+local optimized_langmap = build_langmap(optimized_langmap_pairs)
+local physical_layout_enabled = vim.g.vim_physical_layout ~= false
+
+local function set_vim_layout(enabled)
+    physical_layout_enabled = enabled
+    vim.g.vim_physical_layout = physical_layout_enabled
+    vim.opt.langremap = false
+    vim.o.langmap = physical_layout_enabled and optimized_langmap or ""
+end
+
+local function toggle_vim_layout()
+    set_vim_layout(not physical_layout_enabled)
+
+    local msg = physical_layout_enabled and "Vim layout: optimized physical keys (LTSN for HJKL)"
+        or "Vim layout: standard QWERTY keys (HJKL)"
+    vim.notify(msg, vim.log.levels.INFO)
+end
+
+set_vim_layout(physical_layout_enabled)
+
+map("n", "<leader>tk", toggle_vim_layout, { desc = "Toggle vim key layout (QWERTY/Optimized)" })
+map("n", "<leader>jz", toggle_vim_layout, { desc = "Toggle vim key layout (optimized-mode alias)" })
+
+pcall(vim.api.nvim_del_user_command, "VimLayoutToggle")
+vim.api.nvim_create_user_command("VimLayoutToggle", toggle_vim_layout, { desc = "Toggle Vim key layout" })
+
 map("n", ";", ":", { desc = "CMD enter command mode" })
 -- unbound because i have already mapped caps lock to escape
 -- map("i", "jk", "<ESC>")
