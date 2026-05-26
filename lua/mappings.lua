@@ -6,14 +6,27 @@ require("gitsigns").setup()
 
 local map = vim.keymap.set
 
+-- Layout: LTSN → HJKL in normal/visual mode
+vim.o.langmap = "lh,tj,sk,nl"
+
+-- Ctrl+LTSN -> window nav (layout-agnostic)
+map("n", "<C-l>", "<C-w>h", { silent = true, desc = "Window left" })
+map("n", "<C-t>", "<C-w>j", { silent = true, desc = "Window down" })
+map("n", "<C-s>", "<C-w>k", { silent = true, desc = "Window up" })
+map("n", "<C-n>", "<C-w>l", { silent = true, desc = "Window right" })
+
 map("n", ";", ":", { desc = "CMD enter command mode" })
+map({ "n", "v", "o" }, "Q", "W", { desc = "Move to next WORD" })
+map({ "n", "v", "o" }, "q", "w", { desc = "Move to next word" })
+map("n", "<leader>q", "q", { desc = "Macro record" })
+map("n", "<leader>Q", "@q", { desc = "Play macro q" })
 -- unbound because i have already mapped caps lock to escape
 -- map("i", "jk", "<ESC>")
 
 -- map({ "n", "i", "v" }, "<C-s>", "<cmd> w <cr>")
 
--- Restore <C-n> to toggle the file explorer (NvimTree)
-map("n", "<C-n>", "<cmd>NvimTreeToggle<CR>", { desc = "Toggle File Explorer" })
+-- NvimTree on <C-g> (layout: physical g → QWERTY n position)
+map("n", "<C-g>", "<cmd>NvimTreeToggle<CR>", { desc = "Toggle File Explorer" })
 
 local builtin = require("telescope.builtin")
 
