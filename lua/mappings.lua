@@ -23,7 +23,8 @@ map("n", "<leader>Q", "@q", { desc = "Play macro q" })
 -- unbound because i have already mapped caps lock to escape
 -- map("i", "jk", "<ESC>")
 
--- map({ "n", "i", "v" }, "<C-s>", "<cmd> w <cr>")
+map({ "n", "v" }, ".", "n", { desc = "Search next match" })
+map({ "n", "v" }, ",", "N", { desc = "Search previous match" })
 
 -- NvimTree on <C-g> (layout: physical g → QWERTY n position)
 map("n", "<C-g>", "<cmd>NvimTreeToggle<CR>", { desc = "Toggle File Explorer" })
